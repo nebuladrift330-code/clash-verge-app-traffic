@@ -19,7 +19,8 @@
         "installerHooks": "./packages/windows/core-hashes.nsh",
         "template": "./packages/windows/installer.nsi"
       }
-    }
+    },
+    "createUpdaterArtifacts": false
   },
   "app": {
     "windows": [],
