@@ -1,4 +1,11 @@
-import { alpha, createTheme, Theme as MuiTheme, Shadows } from '@mui/material'
+import {
+  alpha,
+  createTheme,
+  darken,
+  lighten,
+  Theme as MuiTheme,
+  Shadows,
+} from '@mui/material'
 import {
   getCurrentWebviewWindow,
   WebviewWindow,
@@ -169,6 +176,7 @@ export const useCustomTheme = () => {
           },
         },
         shadows: Array(25).fill('none') as Shadows,
+        shape: { borderRadius: 12 },
         typography: {
           fontFamily: setting.font_family
             ? `${setting.font_family}, ${dt.font_family}`
@@ -195,8 +203,81 @@ export const useCustomTheme = () => {
             default: dt.background_color,
           },
         },
+        shape: { borderRadius: 12 },
         typography: { fontFamily: dt.font_family },
       })
+    }
+
+    // M3 container colors, derived from the effective palette so a custom
+    // primary/secondary/error color keeps driving the whole token set.
+    // Falls back to the default theme colors if a custom color is invalid.
+    let containerColors: {
+      primaryContainer: string
+      onPrimaryContainer: string
+      secondaryContainer: string
+      onSecondaryContainer: string
+      errorContainer: string
+      onErrorContainer: string
+    }
+    try {
+      const p = muiTheme.palette
+      containerColors = {
+        primaryContainer:
+          mode === 'light'
+            ? lighten(p.primary.main, 0.75)
+            : darken(p.primary.main, 0.55),
+        onPrimaryContainer:
+          mode === 'light'
+            ? darken(p.primary.main, 0.7)
+            : lighten(p.primary.main, 0.8),
+        secondaryContainer:
+          mode === 'light'
+            ? lighten(p.secondary.main, 0.8)
+            : darken(p.secondary.main, 0.6),
+        onSecondaryContainer:
+          mode === 'light'
+            ? darken(p.secondary.main, 0.7)
+            : lighten(p.secondary.main, 0.8),
+        errorContainer:
+          mode === 'light'
+            ? lighten(p.error.main, 0.75)
+            : darken(p.error.main, 0.6),
+        onErrorContainer:
+          mode === 'light'
+            ? darken(p.error.main, 0.7)
+            : lighten(p.error.main, 0.8),
+      }
+    } catch (e) {
+      console.error(
+        'Error deriving M3 container colors, falling back to defaults:',
+        e,
+      )
+      containerColors = {
+        primaryContainer:
+          mode === 'light'
+            ? lighten(dt.primary_color, 0.75)
+            : darken(dt.primary_color, 0.55),
+        onPrimaryContainer:
+          mode === 'light'
+            ? darken(dt.primary_color, 0.7)
+            : lighten(dt.primary_color, 0.8),
+        secondaryContainer:
+          mode === 'light'
+            ? lighten(dt.secondary_color, 0.8)
+            : darken(dt.secondary_color, 0.6),
+        onSecondaryContainer:
+          mode === 'light'
+            ? darken(dt.secondary_color, 0.7)
+            : lighten(dt.secondary_color, 0.8),
+        errorContainer:
+          mode === 'light'
+            ? lighten(dt.error_color, 0.75)
+            : darken(dt.error_color, 0.6),
+        onErrorContainer:
+          mode === 'light'
+            ? darken(dt.error_color, 0.7)
+            : lighten(dt.error_color, 0.8),
+      }
     }
 
     const rootEle = document.documentElement
@@ -211,6 +292,41 @@ export const useCustomTheme = () => {
       rootEle.style.setProperty('--selection-color', selectColor)
       rootEle.style.setProperty('--scroller-color', scrollColor)
       rootEle.style.setProperty('--primary-main', muiTheme.palette.primary.main)
+      rootEle.style.setProperty(
+        '--primary-container',
+        containerColors.primaryContainer,
+      )
+      rootEle.style.setProperty(
+        '--on-primary-container',
+        containerColors.onPrimaryContainer,
+      )
+      rootEle.style.setProperty(
+        '--secondary-container',
+        containerColors.secondaryContainer,
+      )
+      rootEle.style.setProperty(
+        '--on-secondary-container',
+        containerColors.onSecondaryContainer,
+      )
+      rootEle.style.setProperty(
+        '--error-container',
+        containerColors.errorContainer,
+      )
+      rootEle.style.setProperty(
+        '--on-error-container',
+        containerColors.onErrorContainer,
+      )
+      rootEle.style.setProperty('--surface-container', dt.surface_container)
+      rootEle.style.setProperty(
+        '--surface-container-high',
+        dt.surface_container_high,
+      )
+      rootEle.style.setProperty('--outline', dividerColor)
+      rootEle.style.setProperty('--on-surface', muiTheme.palette.text.primary)
+      rootEle.style.setProperty(
+        '--on-surface-variant',
+        muiTheme.palette.text.secondary,
+      )
       rootEle.style.setProperty(
         '--background-color-alpha',
         alpha(muiTheme.palette.primary.main, 0.1),

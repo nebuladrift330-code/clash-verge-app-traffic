@@ -12,6 +12,8 @@ export const defaultTheme = {
   warning_color: '#FF9500',
   success_color: '#06943D',
   background_color: '#F5F5F5',
+  surface_container: '#ECECEC',
+  surface_container_high: '#E6E6E6',
   font_family: `-apple-system, BlinkMacSystemFont,"Microsoft YaHei UI", "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji"${
     OS === 'windows' ? ', twemoji mozilla' : ''
   }`,
@@ -24,6 +26,8 @@ export const defaultDarkTheme = {
   secondary_color: '#FF9F0A',
   primary_text: '#FFFFFF',
   background_color: '#2E303D',
+  surface_container: '#363845',
+  surface_container_high: '#3E4050',
   secondary_text: '#EBEBF599',
   info_color: '#0A84FF',
   error_color: '#FF453A',
