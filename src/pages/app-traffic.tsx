@@ -12,17 +12,17 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseEmpty, BasePage } from '@/components/base'
 import { useAppTraffic } from '@/hooks/use-app-traffic'
-import parseTraffic from '@/utils/parse-traffic'
 import {
   UNKNOWN_APP_KEY,
   type AppTrafficFilter,
   type AppTrafficRange,
 } from '@/utils/app-traffic'
+import parseTraffic from '@/utils/parse-traffic'
 
 const formatBytes = (num: number) => {
   const [value, unit] = parseTraffic(num)
@@ -45,21 +45,18 @@ const AppTrafficPage = () => {
 
   const { rows, totals } = useAppTraffic(range, filter)
 
-  useEffect(() => {
-    if (!selectedKey && rows.length > 0) setSelectedKey(rows[0].key)
-    if (selectedKey && !rows.some((row) => row.key === selectedKey)) {
-      setSelectedKey(null)
-    }
-  }, [rows, selectedKey])
+  // Adjust selection during render: auto-select the first row and clear a
+  // selection whose row is gone. React re-renders immediately on a
+  // render-time setState, so no effect is needed.
+  if (!selectedKey && rows.length > 0) {
+    setSelectedKey(rows[0].key)
+  } else if (selectedKey && !rows.some((row) => row.key === selectedKey)) {
+    setSelectedKey(null)
+  }
 
   const selected = useMemo(
     () => rows.find((row) => row.key === selectedKey) ?? null,
     [rows, selectedKey],
-  )
-
-  const maxTotal = useMemo(
-    () => Math.max(0, ...rows.map((row) => row.total)),
-    [rows],
   )
 
   const maxDailyTotal = useMemo(
@@ -88,9 +85,12 @@ const AppTrafficPage = () => {
         .map(csvEscape)
         .join(','),
     )
-    const blob = new Blob([[header.map(csvEscape).join(','), ...lines].join('\n')], {
-      type: 'text/csv;charset=utf-8',
-    })
+    const blob = new Blob(
+      [[header.map(csvEscape).join(','), ...lines].join('\n')],
+      {
+        type: 'text/csv;charset=utf-8',
+      },
+    )
     const url = URL.createObjectURL(blob)
     const anchor = document.createElement('a')
     anchor.href = url
@@ -150,7 +150,9 @@ const AppTrafficPage = () => {
         {t('app-traffic.page.noteFindProcess')}
       </Typography>
 
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+      <Box
+        sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}
+      >
         <ButtonGroup variant="outlined" size="small">
           {rangeOptions.map((option) => (
             <Button
@@ -227,7 +229,9 @@ const AppTrafficPage = () => {
                     <TableCell>{formatBytes(row.upload)}</TableCell>
                     <TableCell>{formatBytes(row.total)}</TableCell>
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
                         <Box
                           sx={{
                             width: 120,

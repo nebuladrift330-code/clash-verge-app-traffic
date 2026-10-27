@@ -27,7 +27,10 @@ const PREV_STORAGE_KEY = 'verge-app-traffic-prev-v1'
 // so one call per class yields class-specific tick deltas. The shape
 // matches the core's Prev type structurally; the core itself owns the
 // baseline/delta rules and this hook never recomputes a delta.
-type CorePrev = Record<string, { upload: number; download: number; process: string }>
+type CorePrev = Record<
+  string,
+  { upload: number; download: number; process: string }
+>
 type PrevByClass = Record<AppTrafficClass, CorePrev>
 
 const CLASSES: AppTrafficClass[] = ['proxy', 'direct', 'other']
@@ -38,7 +41,7 @@ const emptyPrevByClass = (): PrevByClass => ({
   other: {},
 })
 
-const readJson = <T,>(key: string): T | null => {
+const readJson = <T>(key: string): T | null => {
   try {
     const raw = window.localStorage.getItem(key)
     return raw ? (JSON.parse(raw) as T) : null
@@ -122,7 +125,7 @@ export const useAppTraffic = (
 
       for (const entry of result.perApp) {
         if (entry.upload <= 0 && entry.download <= 0) continue
-        const record = day[entry.app] ??= emptyDayRecord()
+        const record = (day[entry.app] ??= emptyDayRecord())
         record.upload += entry.upload
         record.download += entry.download
         if (trafficClass === 'proxy') {
@@ -138,7 +141,7 @@ export const useAppTraffic = (
       for (const conn of classConns) {
         const appName = result.nextPrev[conn.id]?.process
         if (!appName) continue
-        const record = day[appName] ??= emptyDayRecord()
+        const record = (day[appName] ??= emptyDayRecord())
         addId(record.connectionIds[trafficClass], conn.id)
         const host = hostFromConnection(conn)
         if (!host) continue
@@ -157,7 +160,10 @@ export const useAppTraffic = (
     // recounts bytes already stored in the totals.
     writeJson(TOTALS_STORAGE_KEY, state.store)
     writeJson(PREV_STORAGE_KEY, state.prevByClass)
-    setStoreVersion((v) => v + 1)
+    // Defer the version bump out of the effect so the store write does not
+    // synchronously set state during the effect; the bump still lands
+    // before paint and triggers the rows recompute.
+    queueMicrotask(() => setStoreVersion((v) => v + 1))
   }, [connections])
 
   useEffect(

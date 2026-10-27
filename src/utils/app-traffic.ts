@@ -86,9 +86,7 @@ export const trafficClassFromConnection = (
 ): AppTrafficClass => {
   const chains = conn.chains || []
   if (chains.length === 0) return 'other'
-  return chains.every((c) => c.toUpperCase() === 'DIRECT')
-    ? 'direct'
-    : 'proxy'
+  return chains.every((c) => c.toUpperCase() === 'DIRECT') ? 'direct' : 'proxy'
 }
 
 // Projection for the core: it only reads id, process/processPath and
@@ -172,11 +170,7 @@ export const filterTotals = (
       for (const [host, hostRecord] of Object.entries(record.hosts)) {
         const hostIds =
           filter === 'all'
-            ? [
-                ...hostRecord.proxy,
-                ...hostRecord.direct,
-                ...hostRecord.other,
-              ]
+            ? [...hostRecord.proxy, ...hostRecord.direct, ...hostRecord.other]
             : hostRecord[filter]
         const count = new Set(hostIds).size
         if (count <= 0) continue
@@ -200,8 +194,7 @@ export const filterTotals = (
       hosts: [...entry.hosts.entries()]
         .map(([host, connections]) => ({ host, connections }))
         .sort(
-          (a, b) =>
-            b.connections - a.connections || (a.host < b.host ? -1 : 1),
+          (a, b) => b.connections - a.connections || (a.host < b.host ? -1 : 1),
         ),
       daily: dateKeys.map((dateKey) => {
         const totals = entry.daily.get(dateKey) ?? { upload: 0, download: 0 }

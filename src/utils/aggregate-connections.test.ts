@@ -13,7 +13,12 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
       {},
       {
         connections: [
-          { id: 'c1', metadata: { process: 'chrome' }, upload: 100, download: 1000 },
+          {
+            id: 'c1',
+            metadata: { process: 'chrome' },
+            upload: 100,
+            download: 1000,
+          },
           {
             id: 'c2',
             metadata: { processPath: 'C:\\Program Files\\Steam\\steam.exe' },
@@ -36,7 +41,12 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
       {},
       {
         connections: [
-          { id: 'c1', metadata: { process: 'chrome' }, upload: 100, download: 1000 },
+          {
+            id: 'c1',
+            metadata: { process: 'chrome' },
+            upload: 100,
+            download: 1000,
+          },
           {
             id: 'c2',
             metadata: { processPath: 'C:\\Program Files\\Steam\\steam.exe' },
@@ -50,14 +60,24 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
     const prevCopy = JSON.parse(JSON.stringify(first.nextPrev))
     const second = aggregateConnections(first.nextPrev, {
       connections: [
-        { id: 'c1', metadata: { process: 'ChromeNew' }, upload: 150, download: 1500 },
+        {
+          id: 'c1',
+          metadata: { process: 'ChromeNew' },
+          upload: 150,
+          download: 1500,
+        },
         {
           id: 'c2',
           metadata: { processPath: 'C:\\Program Files\\Steam\\steam.exe' },
           upload: 50,
           download: 500,
         },
-        { id: 'c4', metadata: { process: 'discord' }, upload: 10, download: 20 },
+        {
+          id: 'c4',
+          metadata: { process: 'discord' },
+          upload: 10,
+          download: 20,
+        },
       ],
     })
     expect(second.perApp.find((x) => x.app === 'chrome')).toEqual({
@@ -88,13 +108,23 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
       {},
       {
         connections: [
-          { id: 'c1', metadata: { process: 'chrome' }, upload: 150, download: 1500 },
+          {
+            id: 'c1',
+            metadata: { process: 'chrome' },
+            upload: 150,
+            download: 1500,
+          },
         ],
       },
     )
     const second = aggregateConnections(first.nextPrev, {
       connections: [
-        { id: 'c1', metadata: { process: 'chrome' }, upload: 10, download: 100 },
+        {
+          id: 'c1',
+          metadata: { process: 'chrome' },
+          upload: 10,
+          download: 100,
+        },
       ],
     })
     expect(second.perApp).toEqual([
@@ -182,13 +212,23 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
       {},
       {
         connections: [
-          { id: 'x', metadata: { process: 'big' }, upload: 9007199254740990, download: 0 },
+          {
+            id: 'x',
+            metadata: { process: 'big' },
+            upload: 9007199254740990,
+            download: 0,
+          },
         ],
       },
     )
     const second = aggregateConnections(first.nextPrev, {
       connections: [
-        { id: 'x', metadata: { process: 'big' }, upload: 9007199254740991, download: 0 },
+        {
+          id: 'x',
+          metadata: { process: 'big' },
+          upload: 9007199254740991,
+          download: 0,
+        },
       ],
     })
     expect(second.perApp).toEqual([
@@ -201,7 +241,12 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
       {},
       {
         connections: [
-          { id: 'x', metadata: { process: 'big' }, upload: 9007199254740990, download: 0 },
+          {
+            id: 'x',
+            metadata: { process: 'big' },
+            upload: 9007199254740990,
+            download: 0,
+          },
         ],
       },
     )
@@ -216,18 +261,33 @@ describe('aggregateConnections (Tokyo trial cases)', () => {
       {},
       {
         connections: [
-          { id: 'k', metadata: { process: 'wechat' }, upload: 100, download: 200 },
+          {
+            id: 'k',
+            metadata: { process: 'wechat' },
+            upload: 100,
+            download: 200,
+          },
         ],
       },
     )
     const s1 = aggregateConnections(s0.nextPrev, {
       connections: [
-        { id: 'k', metadata: { process: 'wechat' }, upload: 150, download: 300 },
+        {
+          id: 'k',
+          metadata: { process: 'wechat' },
+          upload: 150,
+          download: 300,
+        },
       ],
     })
     const s2 = aggregateConnections(s1.nextPrev, {
       connections: [
-        { id: 'k', metadata: { process: 'wechat' }, upload: 150, download: 300 },
+        {
+          id: 'k',
+          metadata: { process: 'wechat' },
+          upload: 150,
+          download: 300,
+        },
       ],
     })
     expect(s1.perApp).toEqual([
